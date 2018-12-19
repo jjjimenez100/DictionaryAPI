@@ -1,7 +1,10 @@
-package io.toro.ojtbe.jimenez.dictionary;
+package io.toro.ojtbe.jimenez.dictionary.controllers;
 
+import io.toro.ojtbe.jimenez.dictionary.error.ResourceNotFound;
 import io.toro.ojtbe.jimenez.dictionary.models.DictionaryEntry;
 import io.toro.ojtbe.jimenez.dictionary.models.DictionaryEntryRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -9,10 +12,11 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-public class Controller {
+@RequestMapping("/api/v1")
+final class DictionaryController {
     private final DictionaryEntryRepository repository;
 
-    public Controller(DictionaryEntryRepository repository){
+    public DictionaryController(DictionaryEntryRepository repository){
         this.repository = repository;
     }
 
@@ -22,14 +26,13 @@ public class Controller {
     }
 
     @GetMapping("/dictionary/{term}")
-    DictionaryEntry getOne(@PathVariable String term){
+    ResponseEntity getOne(@PathVariable String term){
         Optional<DictionaryEntry> matchedEntry = repository.findByTermIgnoreCase(term);
         if(matchedEntry.isPresent()){
-            return matchedEntry.get();
+            return new ResponseEntity(matchedEntry.get(), HttpStatus.OK);
         }
         else{
-            // to replace
-            throw new RuntimeException();
+            return new ResponseEntity(new ResourceNotFound("RESOURCE_NOT_FOUND", term + " does not exist"), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -50,8 +53,7 @@ public class Controller {
                 entry.setDefinition(newEntry.getDefinition());
             }
             return repository.save(entry);
-        }
-        else{
+        } else {
             newEntry.setTerm(term);
             return repository.save(newEntry);
         }

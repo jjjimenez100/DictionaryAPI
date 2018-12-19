@@ -1,12 +1,15 @@
 package io.toro.ojtbe.jimenez.dictionary.models;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
+@NoArgsConstructor
 public class DictionaryEntry {
     private @Id @GeneratedValue Long id;
 
@@ -22,6 +25,4 @@ public class DictionaryEntry {
         this.term = term;
         this.definition = definition;
     }
-
-    private DictionaryEntry() {}
 }
