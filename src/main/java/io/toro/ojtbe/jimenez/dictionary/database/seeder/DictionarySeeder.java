@@ -12,11 +12,11 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 // @Component
-public final class DictionarySeeder implements CommandLineRunner{
+final class DictionarySeeder implements CommandLineRunner{
     private final DictionaryEntryRepository repository;
 
     @Autowired
-    public DictionarySeeder(DictionaryEntryRepository repository){
+    DictionarySeeder(DictionaryEntryRepository repository){
         this.repository = repository;
     }
 
@@ -35,9 +35,10 @@ public final class DictionarySeeder implements CommandLineRunner{
 
         logger.info("Postgresql -- Db: dictionary");
         logger.info("Adding to database");
+
         int counter = 0;
         for(String key : contents.keySet()){
-            System.out.println("Adding entry #" + ++counter);
+            logger.info("Adding entry #" + ++counter);
             repository.save(new DictionaryEntry(key, contents.get(key)));
         }
         logger.info("Seeding complete");

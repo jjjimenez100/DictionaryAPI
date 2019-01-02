@@ -6,5 +6,7 @@ import java.util.Optional;
 
 public interface DictionaryEntryRepository extends JpaRepository<DictionaryEntry, Long> {
     Optional<DictionaryEntry> findByTermIgnoreCase(String term);
+    boolean existsByTerm(String term);
+    void deleteByTerm(String term);
 }
 

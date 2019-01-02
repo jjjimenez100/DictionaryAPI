@@ -3,6 +3,7 @@ package io.toro.ojtbe.jimenez.dictionary.models;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.ResourceSupport;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
