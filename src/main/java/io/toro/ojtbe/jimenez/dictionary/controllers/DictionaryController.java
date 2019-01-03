@@ -1,24 +1,25 @@
 package io.toro.ojtbe.jimenez.dictionary.controllers;
 
-import io.toro.ojtbe.jimenez.dictionary.error.ResourceNotFound;
 import io.toro.ojtbe.jimenez.dictionary.models.DictionaryEntry;
 import io.toro.ojtbe.jimenez.dictionary.models.DictionaryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.ResourceAssembler;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.server.ResponseStatusException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/dictionary")
-public final class DictionaryController {
+public class DictionaryController {
 
     @Autowired
     private final DictionaryService service;
@@ -34,21 +35,22 @@ public final class DictionaryController {
         this.logger = LoggerFactory.getLogger(DictionaryController.class);
     }
 
-    @GetMapping("/entries")
-    List<DictionaryEntry> all(HttpServletRequest request){
+    @GetMapping(value = "/entries")
+    Resources<Resource<DictionaryEntry>> all(HttpServletRequest request, Pageable pageable, PagedResourcesAssembler pagingAssembler){
         logRequestDetails(request);
-        return service.getAllEntries();
+        Page<DictionaryEntry> resourceEntries = service.getAllEntries(pageable);
+
+        return pagingAssembler.toResource(resourceEntries, assembler);
     }
 
-    @GetMapping("/entries/{term}")
-    ResponseEntity getOne(HttpServletRequest request, @PathVariable String term){
+    @GetMapping(value = "/entries/{term}")
+    Resource<DictionaryEntry> getOne(HttpServletRequest request, @PathVariable String term){
         logRequestDetails(request);
         Optional<DictionaryEntry> matchedEntry = service.getEntryByTerm(term);
         if(matchedEntry.isPresent()){
-            return new ResponseEntity<>(matchedEntry.get(), HttpStatus.OK);
-        }
-        else{
-            return new ResponseEntity<>(new ResourceNotFound("RESOURCE_NOT_FOUND", term + " does not exist"), HttpStatus.NOT_FOUND);
+            return assembler.toResource(matchedEntry.get());
+        } else{
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entry does not exist.");
         }
     }
 
@@ -64,15 +66,12 @@ public final class DictionaryController {
         Optional<DictionaryEntry> matchedEntry = service.getEntryByTerm(term);
         if(matchedEntry.isPresent()){
             DictionaryEntry entry = matchedEntry.get();
-            if(!newEntry.getTerm().isEmpty()){
-                entry.setTerm(newEntry.getTerm());
-            }
-            if(!newEntry.getDefinition().isEmpty()){
-                entry.setDefinition(newEntry.getDefinition());
-            }
+            entry.setDefinition(newEntry.getDefinition());
+
             return service.saveNewEntry(entry);
         } else {
             newEntry.setTerm(term);
+
             return service.saveNewEntry(newEntry);
         }
     }

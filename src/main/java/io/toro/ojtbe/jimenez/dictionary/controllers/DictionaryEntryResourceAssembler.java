@@ -1,8 +1,6 @@
 package io.toro.ojtbe.jimenez.dictionary.controllers;
 
-import io.toro.ojtbe.jimenez.dictionary.controllers.DictionaryController;
 import io.toro.ojtbe.jimenez.dictionary.models.DictionaryEntry;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.ResourceAssembler;
@@ -15,6 +13,6 @@ public class DictionaryEntryResourceAssembler implements ResourceAssembler<Dicti
     public Resource<DictionaryEntry> toResource(DictionaryEntry entry){
         return new Resource<>(entry,
                 linkTo(methodOn(DictionaryController.class).getOne(null, entry.getTerm())).withSelfRel(),
-                linkTo(methodOn(DictionaryController.class).all(null)).withRel("entries"));
+                linkTo(methodOn(DictionaryController.class).all( null, null, null)).withRel("entries"));
     }
 }

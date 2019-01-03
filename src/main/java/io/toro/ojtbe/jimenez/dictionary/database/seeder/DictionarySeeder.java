@@ -2,12 +2,11 @@ package io.toro.ojtbe.jimenez.dictionary.database.seeder;
 
 import io.toro.ojtbe.jimenez.dictionary.models.DictionaryEntry;
 import io.toro.ojtbe.jimenez.dictionary.models.DictionaryEntryRepository;
-import io.toro.ojtbe.jimenez.dictionary.serialization.JsonParser;
+import io.toro.ojtbe.jimenez.dictionary.parser.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
@@ -22,8 +21,7 @@ final class DictionarySeeder implements CommandLineRunner{
 
     @Override
     public void run(String... Strings) throws Exception {
-        String url = "https://raw.githubusercontent.com/matthewreagan/Websters" +
-                "";
+        String url = "https://raw.githubusercontent.com/matthewreagan/Websters";
         Logger logger = LoggerFactory.getLogger(DictionarySeeder.class);
         logger.info("Requesting JSON file at: " + url);
 

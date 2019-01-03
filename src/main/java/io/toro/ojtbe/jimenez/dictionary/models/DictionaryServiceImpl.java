@@ -1,14 +1,11 @@
 package io.toro.ojtbe.jimenez.dictionary.models;
 
-import io.toro.ojtbe.jimenez.dictionary.controllers.DictionaryController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,8 +20,8 @@ public class DictionaryServiceImpl implements DictionaryService{
     }
 
     @Override
-    public List<DictionaryEntry> getAllEntries(){
-        return repository.findAll();
+    public Page<DictionaryEntry> getAllEntries(Pageable page){
+        return repository.findAll(page);
     }
 
     @Override

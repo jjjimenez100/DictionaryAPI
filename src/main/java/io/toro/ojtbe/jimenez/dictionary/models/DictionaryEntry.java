@@ -15,7 +15,7 @@ public class DictionaryEntry {
     private @Id @GeneratedValue Long id;
 
     @NotNull
-    @Column(length = 255)
+    @Column(length = 255, unique = true)
     private String term;
 
     @NotNull
